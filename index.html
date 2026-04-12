@@ -1,186 +1,570 @@
-  <!DOCTYPE html>                                                                                                                       
-  <html lang="en">                                                                                                                      
-  <head>                                                                                                                                
-  <meta charset="UTF-8">                                                                                                                
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">                                                                
-  <title>Pixel Word Art</title>                                                                                                         
-  <link rel="icon" type="image/png" href="favicon.png">                                                                                 
-  <style>                                                                                                                               
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }                                                           
-                                                                                                                                        
-    body {                                                                                                                              
-      background: #000;                                                                                                                 
-      color: #fff;                                                                                                                      
-      font-family: 'Courier New', Courier, monospace;                                                                                   
-      min-height: 100vh;                                                                                                                
-      display: flex;                                                                                                                    
-      flex-direction: column;                                                                                                           
-      align-items: center;                                                                                                              
-      overflow-x: hidden;                                                                                                               
-    }                                                                                                                                   
-                                                                                                                                        
-    /* ── Title ───────────────────────────────────── */                                                                                
-    .title-wrap {                                                                                                                       
-      padding: 40px 0 0;                                                                                                                
-      display: flex;                                                                                                                    
-      justify-content: center;                                                                                                          
-      flex-shrink: 0;                                                                                                                   
-    }                                                                                                                                   
-    #titleCanvas {                                                                                                                      
-      display: block;                                                                                                                   
-    }                                                                                                                                   
-                                                                                                                                        
-    /* ── Main display area ───────────────────────── */                                                                                
-    .main-area {                                                                                                                        
-      flex: 1;                                                                                                                          
-      display: flex;                                                                                                                    
-      align-items: center;                                                                                                              
-      justify-content: center;                                                                                                          
-      padding: 32px 24px 24px;                                                                                                          
-      position: relative;                                                                                                               
-      min-height: 300px;                                                                                                                
-    }                                                                                                                                   
-                                                                                                                                        
-    #computerCanvas,                                                                                                                    
-    #artCanvas {                                                                                                                        
-      display: block;                                                                                                                   
-      transition: opacity 0.35s ease;                                                                                                   
-    }                                                                                                                                   
-                                                                                                                                        
-    #computerCanvas { position: absolute; }                                                                                             
-    #artCanvas      { display: block; }                                                                                                 
-                                                                                                                                        
-    /* ── Controls ────────────────────────────────── */                                                                                
-    .controls {                                                                                                                         
-      flex-shrink: 0;                                                                                                                   
-      width: 100%;                                                                                                                      
-      max-width: 680px;                                                                                                                 
-      padding: 0 32px 48px;                                                                                                             
-      display: flex;                                                                                                                    
-      flex-direction: column;                                                                                                           
-      align-items: center;                                                                                                              
-      gap: 28px;                                                                                                                        
-    }                                                                                                                                   
-                                                                                                                                        
-    /* Input */                                                                                                                         
-    .input-wrap {                                                                                                                       
-      width: 100%;                                                                                                                      
-      position: relative;                                                                                                               
-    }                                                                                                                                   
-    .input-wrap::after {                                                                                                                
-      content: '';                                                                                                                      
-      position: absolute;                                                                                                               
-      bottom: 0; left: 0; right: 0;                                                                                                     
-      height: 1px;                                                                                                                      
-      background: #2a2a2a;                                                                                                              
-      transition: background 0.2s;                                                                                                      
-    }                                                                                                                                   
-    .input-wrap:focus-within::after {                                                                                                   
-      background: #666;                                                                                                                 
-    }                                                                                                                                   
-    input[type="text"] {                                                                                                                
-      background: transparent;                                                                                                          
-      border: none;                                                                                                                     
-      outline: none;                                                                                                                    
-      color: #fff;                                                                                                                      
-      font-family: inherit;                                                                                                             
-      font-size: 12px;                                                                                                                  
-      letter-spacing: 5px;                                                                                                              
-      text-transform: uppercase;                                                                                                        
-      width: 100%;                                                                                                                      
-      padding: 0 0 14px;                                                                                                                
-      caret-color: #fff;                                                                                                                
-    }                                                                                                                                   
-    input::placeholder {                                                                                                                
-      color: #1f1f1f;                                                                                                                   
-      letter-spacing: 5px;                                                                                                              
-    }                                                                                                                                   
-                                                                                                                                        
-    /* Options row */                                                                                                                   
-    .options-row {                                                                                                                      
-      display: flex;                                                                                                                    
-      gap: 48px;                                                                                                                        
-      flex-wrap: wrap;                                                                                                                  
-      justify-content: center;                                                                                                          
-      align-items: flex-start;                                                                                                          
-    }                                                                                                                                   
-                                                                                                                                        
-    .opt-group {                                                                                                                        
-      display: flex;                                                                                                                    
-      flex-direction: column;                                                                                                           
-                                                                                                                                        
-  … +333 lines …                                                                                                                        
-  er);                                                                                                                                  
-      const cw     = cols * STEP + PAD * 2;                                                                                             
-      const ch     = ROWS * STEP - GAP + PAD * 2;                                                                                       
-      artCanvas.width  = Math.max(cw, 200);                                                                                             
-      artCanvas.height = Math.max(ch, 100);                                                                                             
-      aCtx.fillStyle = '#000';                                                                                                          
-      aCtx.fillRect(0, 0, artCanvas.width, artCanvas.height);                                                                           
-      drawTextLine(aCtx, upper, PAD, PAD, STEP, PIXEL, RADIUS, 0);                                                                      
-                                                                                                                                        
-    } else {                                                                                                                            
-      // Each word on its own line                                                                                                      
-      const words    = upper.split(' ').filter(w => w.length > 0);                                                                      
-      const maxCols  = Math.max(...words.map(w => advanceCols(w)));                                                                     
-      const lineH    = ROWS * STEP - GAP;                                                                                               
-      const lineGapH = LINE_GAP * STEP;                                                                                                 
-      const cw       = maxCols * STEP + PAD * 2;                                                                                        
-      const ch       = words.length * lineH + (words.length - 1) * lineGapH + PAD * 2;                                                  
-                                                                                                                                        
-      artCanvas.width  = Math.max(cw, 200);                                                                                             
-      artCanvas.height = Math.max(ch, 100);                                                                                             
-      aCtx.fillStyle = '#000';                                                                                                          
-      aCtx.fillRect(0, 0, artCanvas.width, artCanvas.height);                                                                           
-                                                                                                                                        
-      let li = 0, baseY = PAD;                                                                                                          
-      for (const word of words) {                                                                                                       
-        li = drawTextLine(aCtx, word, PAD, baseY, STEP, PIXEL, RADIUS, li);                                                             
-        baseY += lineH + lineGapH;                                                                                                      
-      }                                                                                                                                 
-    }                                                                                                                                   
-  }                                                                                                                                     
-                                                                                                                                        
-  // ── Main area sizing: keep computer canvas centered ────────────────────────                                                        
-  function sizeMainArea() {                                                                                                             
-    const mainArea = document.getElementById('mainArea');                                                                               
-    // Set min-height to match computer canvas height so layout doesn't jump                                                            
-    mainArea.style.minHeight = (computerCanvas.height + 64) + 'px';                                                                     
-  }                                                                                                                                     
-                                                                                                                                        
-  // ── Events ────────────────────────────────────────────────────────────────                                                         
-  document.getElementById('textInput').addEventListener('input', renderArt);                                                            
-                                                                                                                                        
-  document.querySelectorAll('[data-color]').forEach(btn => {                                                                            
-    btn.addEventListener('click', () => {                                                                                               
-      document.querySelectorAll('[data-color]').forEach(b => b.classList.remove('active'));                                             
-      btn.classList.add('active');                                                                                                      
-      colorMode = btn.dataset.color;                                                                                                    
-      renderArt();                                                                                                                      
-    });                                                                                                                                 
-  });                                                                                                                                   
-                                                                                                                                        
-  document.querySelectorAll('[data-layout]').forEach(btn => {                                                                           
-    btn.addEventListener('click', () => {                                                                                               
-      document.querySelectorAll('[data-layout]').forEach(b => b.classList.remove('active'));                                            
-      btn.classList.add('active');                                                                                                      
-      layoutMode = btn.dataset.layout;                                                                                                  
-      renderArt();                                                                                                                      
-    });                                                                                                                                 
-  });                                                                                                                                   
-                                                                                                                                        
-  document.getElementById('dlBtn').addEventListener('click', () => {                                                                    
-    const link    = document.createElement('a');                                                                                        
-    link.download = 'pixel-word-art.png';                                                                                               
-    link.href     = artCanvas.toDataURL('image/png');                                                                                   
-    link.click();                                                                                                                       
-  });                                                                                                                                   
-                                                                                                                                        
-  // ── Init ──────────────────────────────────────────────────────────────────                                                         
-  renderTitle();                                                                                                                        
-  renderComputer();                                                                                                                     
-  sizeMainArea();                                                                                                                       
-  renderArt();                                                                                                                          
-  </script>                                                                                                                             
-  </body>                                                                                                                               
-  </html>    
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pixel Word Art</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #000;
+    color: #fff;
+    font-family: 'Courier New', Courier, monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+  }
+
+  /* ── Title ───────────────────────────────────── */
+  .title-wrap {
+    padding: 40px 0 0;
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  #titleCanvas {
+    display: block;
+  }
+
+  /* ── Main display area ───────────────────────── */
+  .main-area {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px 24px;
+    position: relative;
+    min-height: 300px;
+  }
+
+  #computerCanvas,
+  #artCanvas {
+    display: block;
+    transition: opacity 0.35s ease;
+  }
+
+  #computerCanvas { position: absolute; }
+  #artCanvas      { display: block; }
+
+  /* ── Controls ────────────────────────────────── */
+  .controls {
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 680px;
+    padding: 0 32px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+  }
+
+  /* Input */
+  .input-wrap {
+    width: 100%;
+    position: relative;
+  }
+  .input-wrap::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: #2a2a2a;
+    transition: background 0.2s;
+  }
+  .input-wrap:focus-within::after {
+    background: #666;
+  }
+  input[type="text"] {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-family: inherit;
+    font-size: 12px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    width: 100%;
+    padding: 0 0 14px;
+    caret-color: #fff;
+  }
+  input::placeholder {
+    color: #1f1f1f;
+    letter-spacing: 5px;
+  }
+
+  /* Options row */
+  .options-row {
+    display: flex;
+    gap: 48px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  .opt-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .opt-label {
+    font-size: 8px;
+    letter-spacing: 4px;
+    color: #888;
+    text-transform: uppercase;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 6px;
+  }
+
+  /* Buttons */
+  .opt-btn {
+    background: transparent;
+    border: 1px solid #444;
+    color: #ccc;
+    font-family: inherit;
+    font-size: 8px;
+    letter-spacing: 2.5px;
+    padding: 7px 16px;
+    cursor: pointer;
+    text-transform: uppercase;
+    border-radius: 2px;
+    transition: border-color 0.15s, color 0.15s, box-shadow 0.15s;
+  }
+  .opt-btn:hover {
+    border-color: #aaa;
+    color: #eee;
+    box-shadow: 0 0 8px rgba(255,255,255,0.12);
+  }
+  .opt-btn.active {
+    border-color: #fff;
+    color: #fff;
+    box-shadow:
+      0 0 6px  rgba(255,255,255,0.7),
+      0 0 14px rgba(255,255,255,0.3),
+      0 0 28px rgba(255,255,255,0.12);
+  }
+
+  /* Download button */
+  .dl-btn {
+    background: transparent;
+    border: 1px solid #444;
+    color: #bbb;
+    font-family: inherit;
+    font-size: 8px;
+    letter-spacing: 3px;
+    padding: 8px 22px;
+    cursor: pointer;
+    text-transform: uppercase;
+    border-radius: 2px;
+    transition: border-color 0.15s, color 0.15s, box-shadow 0.15s;
+    display: none;
+  }
+  .dl-btn.visible {
+    display: inline-block;
+  }
+  .dl-btn:hover {
+    border-color: #ccc;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(255,255,255,0.2);
+  }
+  .dl-btn:active {
+    box-shadow:
+      0 0 8px  rgba(255,255,255,0.6),
+      0 0 20px rgba(255,255,255,0.2);
+  }
+</style>
+</head>
+<body>
+
+<!-- Title pixel art -->
+<div class="title-wrap">
+  <canvas id="titleCanvas"></canvas>
+</div>
+
+<!-- Main: computer homepage + text art canvas -->
+<div class="main-area" id="mainArea">
+  <canvas id="computerCanvas"></canvas>
+  <canvas id="artCanvas"></canvas>
+</div>
+
+<!-- Controls -->
+<div class="controls">
+  <div class="input-wrap">
+    <input type="text" id="textInput" placeholder="Type your words here" autofocus autocomplete="off" spellcheck="false">
+  </div>
+
+  <div class="options-row">
+    <div class="opt-group">
+      <div class="opt-label">Color</div>
+      <div class="btn-row">
+        <button class="opt-btn active" data-color="white">White</button>
+        <button class="opt-btn" data-color="gray">Gray</button>
+        <button class="opt-btn" data-color="alternate">Alternate</button>
+      </div>
+    </div>
+    <div class="opt-group">
+      <div class="opt-label">Layout</div>
+      <div class="btn-row">
+        <button class="opt-btn active" data-layout="line">Single Line</button>
+        <button class="opt-btn" data-layout="wrap">Separate Lines</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="dl-btn" id="dlBtn">Download PNG</button>
+</div>
+
+<script>
+// ── Pixel constants ───────────────────────────────────────────────────────
+const PIXEL  = 16;
+const GAP    = 3;
+const STEP   = 19;   // PIXEL + GAP
+const RADIUS = 2;
+const COLS   = 3;    // letter glyph width
+const ROWS   = 5;    // letter glyph height
+const LETTER_ADV = 4;  // grid cols per letter (3 + 1 gap)
+const SPACE_ADV  = 3;  // grid cols per space
+const LINE_GAP   = 2;  // extra grid rows between text lines
+const PAD        = 40; // canvas padding (px)
+
+const WHITE = '#FFFFFF';
+const GRAY  = '#BDBDBD';
+
+// ── Title pixel constants (smaller scale) ─────────────────────────────────
+const T_PIXEL  = 8;
+const T_GAP    = 2;
+const T_STEP   = 10;
+const T_RADIUS = 1;
+
+// ── Pixel art computer (24 cols × 18 rows) — Figma node 1:2 ──────────────
+// Right eye at cols 15,16 (symmetric with left eye at cols 7,8)
+const COMPUTER_GRID = [
+  [0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0], // 0  monitor top
+  [0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0], // 1
+  [0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0], // 2  sides
+  [0,0,1,1,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,1,1,0,0], // 3  sides + eyes
+  [0,0,1,1,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,1,1,0,0], // 4
+  [0,0,1,1,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,1,1,0,0], // 5
+  [0,0,1,1,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,1,1,0,0], // 6
+  [0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0], // 7  sides only
+  [0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0], // 8
+  [0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0], // 9
+  [0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0], // 10
+  [0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0], // 11
+  [0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0], // 12 monitor bottom
+  [0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0], // 13
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 14 gap
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 15
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1], // 16 keyboard
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1], // 17
+];
+
+// ── 3×5 Pixel Font ────────────────────────────────────────────────────────
+const FONT = {
+  A: [[0,1,0],[1,0,1],[1,1,1],[1,0,1],[1,0,1]],
+  B: [[1,1,0],[1,0,1],[1,1,0],[1,0,1],[1,1,0]],
+  C: [[1,1,1],[1,0,0],[1,0,0],[1,0,0],[1,1,1]],
+  D: [[1,1,0],[1,0,1],[1,0,1],[1,0,1],[1,1,0]],
+  E: [[1,1,1],[1,0,0],[1,1,0],[1,0,0],[1,1,1]],
+  F: [[1,1,1],[1,0,0],[1,1,0],[1,0,0],[1,0,0]],
+  G: [[1,1,1],[1,0,0],[1,0,1],[1,0,1],[1,1,1]],
+  H: [[1,0,1],[1,0,1],[1,1,1],[1,0,1],[1,0,1]],
+  I: [[1,1,1],[0,1,0],[0,1,0],[0,1,0],[1,1,1]],
+  J: [[0,1,1],[0,0,1],[0,0,1],[1,0,1],[0,1,1]],
+  K: [[1,0,1],[1,1,0],[1,1,0],[1,0,1],[1,0,1]],
+  L: [[1,0,0],[1,0,0],[1,0,0],[1,0,0],[1,1,1]],
+  M: [[1,0,1],[1,1,1],[1,1,1],[1,0,1],[1,0,1]],
+  N: [[1,0,1],[1,1,1],[1,0,1],[1,0,1],[1,0,1]],
+  O: [[1,1,1],[1,0,1],[1,0,1],[1,0,1],[1,1,1]],
+  P: [[1,1,1],[1,0,1],[1,1,1],[1,0,0],[1,0,0]],
+  Q: [[1,1,1],[1,0,1],[1,0,1],[1,1,0],[0,0,1]],
+  R: [[1,1,1],[1,0,1],[1,1,0],[1,0,1],[1,0,1]],
+  S: [[1,1,1],[1,0,0],[1,1,1],[0,0,1],[1,1,1]],
+  T: [[1,1,1],[0,1,0],[0,1,0],[0,1,0],[0,1,0]],
+  U: [[1,0,1],[1,0,1],[1,0,1],[1,0,1],[1,1,1]],
+  V: [[1,0,1],[1,0,1],[1,0,1],[1,0,1],[0,1,0]],
+  W: [[1,0,1],[1,0,1],[1,1,1],[1,1,1],[1,0,1]],
+  X: [[1,0,1],[1,0,1],[0,1,0],[1,0,1],[1,0,1]],
+  Y: [[1,0,1],[1,0,1],[0,1,0],[0,1,0],[0,1,0]],
+  Z: [[1,1,1],[0,0,1],[0,1,0],[1,0,0],[1,1,1]],
+  0: [[1,1,1],[1,0,1],[1,0,1],[1,0,1],[1,1,1]],
+  1: [[0,1,0],[1,1,0],[0,1,0],[0,1,0],[1,1,1]],
+  2: [[1,1,1],[0,0,1],[1,1,1],[1,0,0],[1,1,1]],
+  3: [[1,1,1],[0,0,1],[0,1,1],[0,0,1],[1,1,1]],
+  4: [[1,0,1],[1,0,1],[1,1,1],[0,0,1],[0,0,1]],
+  5: [[1,1,1],[1,0,0],[1,1,1],[0,0,1],[1,1,1]],
+  6: [[1,1,1],[1,0,0],[1,1,1],[1,0,1],[1,1,1]],
+  7: [[1,1,1],[0,0,1],[0,1,0],[0,1,0],[0,1,0]],
+  8: [[1,1,1],[1,0,1],[1,1,1],[1,0,1],[1,1,1]],
+  9: [[1,1,1],[1,0,1],[1,1,1],[0,0,1],[1,1,1]],
+  '!': [[0,1,0],[0,1,0],[0,1,0],[0,0,0],[0,1,0]],
+  '?': [[1,1,1],[0,0,1],[0,1,1],[0,0,0],[0,1,0]],
+  '.': [[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,1,0]],
+  ',': [[0,0,0],[0,0,0],[0,0,0],[0,1,0],[1,0,0]],
+  '-': [[0,0,0],[0,0,0],[1,1,1],[0,0,0],[0,0,0]],
+  "'": [[0,1,0],[0,1,0],[0,0,0],[0,0,0],[0,0,0]],
+  '@': [[0,1,1],[1,0,1],[1,1,1],[1,0,0],[0,1,1]],
+  '#': [[1,0,1],[1,1,1],[1,0,1],[1,1,1],[1,0,1]],
+  '$': [[0,1,0],[1,1,1],[0,1,0],[1,1,1],[0,1,0]],
+  '%': [[1,0,0],[0,0,1],[0,1,0],[1,0,0],[0,0,1]],
+  '&': [[0,1,0],[1,0,1],[1,1,0],[1,0,1],[0,1,1]],
+  '(': [[0,1,0],[1,0,0],[1,0,0],[1,0,0],[0,1,0]],
+  ')': [[0,1,0],[0,0,1],[0,0,1],[0,0,1],[0,1,0]],
+  '=': [[0,0,0],[1,1,1],[0,0,0],[1,1,1],[0,0,0]],
+  '~': [[0,0,0],[0,1,0],[1,0,1],[0,0,0],[0,0,0]],
+};
+
+// ── Dynamic Unicode glyph rendering ──────────────────────────────────────
+const GLYPH_CACHE = {};
+
+// Split string into user-perceived characters (handles emoji ZWJ sequences)
+function segmentText(str) {
+  try {
+    return [...new Intl.Segmenter().segment(str)].map(s => s.segment);
+  } catch {
+    return [...str];
+  }
+}
+
+// Rasterise any Unicode character into a COLS×ROWS binary grid
+function generateGlyph(ch) {
+  if (ch in GLYPH_CACHE) return GLYPH_CACHE[ch];
+  const SCALE = 8;
+  const sw = COLS * SCALE, sh = ROWS * SCALE;
+  const off = document.createElement('canvas');
+  off.width = sw; off.height = sh;
+  const offCtx = off.getContext('2d');
+  offCtx.fillStyle = '#000';
+  offCtx.fillRect(0, 0, sw, sh);
+  offCtx.fillStyle = '#fff';
+  offCtx.font = `${sh}px serif`;
+  offCtx.textBaseline = 'top';
+  const x = Math.max(0, (sw - offCtx.measureText(ch).width) / 2);
+  offCtx.fillText(ch, x, 0);
+  const { data } = offCtx.getImageData(0, 0, sw, sh);
+  const grid = Array.from({ length: ROWS }, (_, r) =>
+    Array.from({ length: COLS }, (_, c) => {
+      let sum = 0;
+      for (let dy = 0; dy < SCALE; dy++)
+        for (let dx = 0; dx < SCALE; dx++) {
+          const i = ((r * SCALE + dy) * sw + c * SCALE + dx) * 4;
+          sum += Math.max(data[i], data[i + 1], data[i + 2]);
+        }
+      return sum / (SCALE * SCALE) > 30 ? 1 : 0;
+    })
+  );
+  GLYPH_CACHE[ch] = grid.some(row => row.includes(1)) ? grid : null;
+  return GLYPH_CACHE[ch];
+}
+
+// ── State ─────────────────────────────────────────────────────────────────
+let colorMode  = 'white';
+let layoutMode = 'line';
+
+const titleCanvas    = document.getElementById('titleCanvas');
+const computerCanvas = document.getElementById('computerCanvas');
+const artCanvas      = document.getElementById('artCanvas');
+const tCtx  = titleCanvas.getContext('2d');
+const cCtx  = computerCanvas.getContext('2d');
+const aCtx  = artCanvas.getContext('2d');
+
+// ── Generic pixel drawer ───────────────────────────────────────────────────
+function drawPx(ctx, x, y, size, radius, color) {
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.roundRect(x, y, size, size, radius);
+  ctx.fill();
+}
+
+// ── Letter color logic ─────────────────────────────────────────────────────
+function letterColor(idx) {
+  if (colorMode === 'white')     return WHITE;
+  if (colorMode === 'gray')      return GRAY;
+  return idx % 2 === 0 ? WHITE : GRAY;
+}
+
+// ── Draw text line ─────────────────────────────────────────────────────────
+function drawTextLine(ctx, str, ox, oy, step, pxSize, rad, letterOffset) {
+  let col = 0;
+  let li  = letterOffset;
+  for (const ch of segmentText(str)) {
+    const key = ch.toUpperCase();
+    const g   = FONT[key] || generateGlyph(ch);
+    if (g) {
+      const color = letterColor(li++);
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          if (g[r][c]) {
+            drawPx(ctx, ox + (col + c) * step, oy + r * step, pxSize, rad, color);
+          }
+        }
+      }
+      col += LETTER_ADV;
+    } else if (ch === ' ') {
+      col += SPACE_ADV;
+    }
+  }
+  return li;
+}
+
+// ── Compute advance columns for a string ──────────────────────────────────
+function advanceCols(str) {
+  let cols = 0;
+  for (const ch of segmentText(str)) {
+    const key = ch.toUpperCase();
+    if (FONT[key])       cols += LETTER_ADV;
+    else if (ch === ' ') cols += SPACE_ADV;
+    else if (ch.trim())  cols += LETTER_ADV; // Unicode char
+  }
+  return cols;
+}
+
+// ── Render: Title ─────────────────────────────────────────────────────────
+function renderTitle() {
+  const text  = 'PIXEL WORD ART';
+  const tCols = advanceCols(text);
+  const w     = tCols * T_STEP + T_PIXEL;
+  const h     = ROWS * T_STEP - T_GAP;
+
+  titleCanvas.width  = w;
+  titleCanvas.height = h;
+  tCtx.fillStyle = '#000';
+  tCtx.fillRect(0, 0, w, h);
+
+  let col = 0, li = 0;
+  for (const ch of text) {
+    const g = FONT[ch];
+    if (g) {
+      const color = li % 2 === 0 ? WHITE : GRAY;
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          if (g[r][c]) drawPx(tCtx, (col+c)*T_STEP, r*T_STEP, T_PIXEL, T_RADIUS, color);
+        }
+      }
+      col += LETTER_ADV;
+      li++;
+    } else if (ch === ' ') {
+      col += SPACE_ADV;
+    }
+  }
+}
+
+// ── Render: Computer ──────────────────────────────────────────────────────
+function renderComputer() {
+  const numCols = COMPUTER_GRID[0].length;
+  const numRows = COMPUTER_GRID.length;
+  const w = numCols * STEP + PAD * 2;
+  const h = numRows * STEP + PAD * 2;
+
+  computerCanvas.width  = w;
+  computerCanvas.height = h;
+  cCtx.fillStyle = '#000';
+  cCtx.fillRect(0, 0, w, h);
+
+  for (let r = 0; r < numRows; r++) {
+    for (let c = 0; c < numCols; c++) {
+      if (COMPUTER_GRID[r][c]) {
+        drawPx(cCtx, PAD + c * STEP, PAD + r * STEP, PIXEL, RADIUS, WHITE);
+      }
+    }
+  }
+}
+
+// ── Render: Text Art ─────────────────────────────────────────────────────
+function renderArt() {
+  const raw = document.getElementById('textInput').value;
+  const str = raw.trim();
+
+  const hasText = str.length > 0;
+  computerCanvas.style.opacity = hasText ? '0' : '1';
+  computerCanvas.style.pointerEvents = hasText ? 'none' : 'auto';
+  document.getElementById('dlBtn').classList.toggle('visible', hasText);
+
+  if (!hasText) {
+    artCanvas.width  = 1;
+    artCanvas.height = 1;
+    return;
+  }
+
+  const upper = str.toUpperCase();
+
+  if (layoutMode === 'line') {
+    const cols   = advanceCols(upper);
+    const cw     = cols * STEP + PAD * 2;
+    const ch     = ROWS * STEP - GAP + PAD * 2;
+    artCanvas.width  = Math.max(cw, 200);
+    artCanvas.height = Math.max(ch, 100);
+    aCtx.fillStyle = '#000';
+    aCtx.fillRect(0, 0, artCanvas.width, artCanvas.height);
+    drawTextLine(aCtx, upper, PAD, PAD, STEP, PIXEL, RADIUS, 0);
+
+  } else {
+    const words    = upper.split(' ').filter(w => w.length > 0);
+    const maxCols  = Math.max(...words.map(w => advanceCols(w)));
+    const lineH    = ROWS * STEP - GAP;
+    const lineGapH = LINE_GAP * STEP;
+    const cw       = maxCols * STEP + PAD * 2;
+    const ch       = words.length * lineH + (words.length - 1) * lineGapH + PAD * 2;
+
+    artCanvas.width  = Math.max(cw, 200);
+    artCanvas.height = Math.max(ch, 100);
+    aCtx.fillStyle = '#000';
+    aCtx.fillRect(0, 0, artCanvas.width, artCanvas.height);
+
+    let li = 0, baseY = PAD;
+    for (const word of words) {
+      li = drawTextLine(aCtx, word, PAD, baseY, STEP, PIXEL, RADIUS, li);
+      baseY += lineH + lineGapH;
+    }
+  }
+}
+
+// ── Main area sizing ───────────────────────────────────────────────────────
+function sizeMainArea() {
+  const mainArea = document.getElementById('mainArea');
+  mainArea.style.minHeight = (computerCanvas.height + 64) + 'px';
+}
+
+// ── Events ────────────────────────────────────────────────────────────────
+document.getElementById('textInput').addEventListener('input', renderArt);
+
+document.querySelectorAll('[data-color]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-color]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    colorMode = btn.dataset.color;
+    renderArt();
+  });
+});
+
+document.querySelectorAll('[data-layout]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-layout]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    layoutMode = btn.dataset.layout;
+    renderArt();
+  });
+});
+
+document.getElementById('dlBtn').addEventListener('click', () => {
+  const link    = document.createElement('a');
+  link.download = 'pixel-word-art.png';
+  link.href     = artCanvas.toDataURL('image/png');
+  link.click();
+});
+
+// ── Init ──────────────────────────────────────────────────────────────────
+renderTitle();
+renderComputer();
+sizeMainArea();
+renderArt();
+</script>
+</body>
+</html>
