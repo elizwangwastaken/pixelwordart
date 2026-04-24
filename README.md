@@ -12,7 +12,7 @@ gray: subdued #BDBDBD tones.
 
 alternate: alternates colors between letters for depth.
 
-<img width="357" height="262" alt="image" src="https://github.com/user-attachments/assets/bd62be84-b1d1-4af9-ad7a-0adee0db1ae6" />
+<img width="357" height="262" alt="image" src="https://github.com/user-attachments/assets/bd51a572-411a-4613-805a-888833fc878c" />
 
 layout control: toggle between a continuous single Line or separate Lines for multi-word compositions
 
